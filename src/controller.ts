@@ -1,12 +1,12 @@
 import { Request, Response } from 'express';
-import { startEngine as startTestEngine, stopEngine as stopTestEngine, getEagleEyes as getTestEagleEyes } from './bots/test';
+import { startEngine as startTestEngine, stopEngine as stopTestEngine, getEngineStatus as getTestStatus } from './bots/test';
 import { Bot, BotController, BotResponse } from './type/types';
 
 const botControllerMap: Record<string, BotController> = {
   test_bot: {
     start: startTestEngine,
     stop: stopTestEngine,
-    status: getTestEagleEyes,
+    status: getTestStatus,
   },
 };
 
