@@ -69,7 +69,7 @@ export const startEaglesEye = async (res: Response) => {
   }
   results.length = 0; 
   eagleEyes = true; */}
-  
+
   return res.status(200).json({
     success: true,
     status: 'ENGINE_STARTED',
