@@ -19,7 +19,6 @@ app.post('/stop', controller_1.stopEaglesEye);
 app.get('/all', controller_1.getAllEngine);
 app.get('/start/id', controller_1.startEngineById);
 app.get('/stop/id', controller_1.stopEngineById);
-app.post('/getStatus/id', controller_1.getEngineStatus);
 // Start server
 const PORT = process.env.PORT || 3001;
 server.listen(PORT, () => {

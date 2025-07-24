@@ -7,9 +7,9 @@ export interface Bot {
 }
 
 export interface BotController {
-  start?: (res:Response) => Promise<any>;
-  stop?: (res:Response) => Promise<any>;
-  status?: (res:Response) => Promise<any>;
+  start?: () => Promise<{ success: boolean; message: string; data?: any }>,
+  stop?: () => Promise<{ success: boolean; message: string; data?: any }>,
+  status?: () => Promise<{ success: boolean; message: string; data?: any }>,
 }
 
 export interface BotResponse {

@@ -1,44 +1,55 @@
-import { Response } from "express";
 import { sendCommand } from "../botClient";
 
 
 const bot_url = process.env.BOT_SERVICE_URL || 'https://godscpr.onrender.com';
 
-export const startEngine = async ( res: Response ) => {
+export const startEngine = async () => {
   try {
-    const result = await sendCommand(bot_url,'start');
-    res.json(result);
+    const result = await sendCommand(bot_url, 'start');
+    return {
+      success: result?.success ?? true,
+      message: result?.message || 'Started successfully',
+      data: result,
+    };
   } catch (error) {
-    res.status(201).json({ 
+    return {
       success: false,
-      error: 'Failed to start bot service',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    });
+      message: error instanceof Error ? error.message : 'Failed to start bot service',
+      data: null,
+    };
   }
 };
 
-export const stopEngine = async ( res: Response) => {
+export const stopEngine = async () => {
   try {
-    const result = await sendCommand(bot_url,'stop');
-    res.json(result);
+    const result = await sendCommand(bot_url, 'stop');
+    return {
+      success: result?.success ?? true,
+      message: result?.message || 'Stopped successfully',
+      data: result,
+    };
   } catch (error) {
-    res.status(201).json({ 
+    return {
       success: false,
-      error: 'Failed to start bot service',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    });
+      message: error instanceof Error ? error.message : 'Failed to stop bot service',
+      data: null,
+    };
   }
 };
 
-export const getEngineStatus = async ( res: Response) => {
+export const getEngineStatus = async () => {
   try {
-    const result = await sendCommand(bot_url,'health');
-    res.json(result);
+    const result = await sendCommand(bot_url, 'health');
+    return {
+      success: result?.success ?? true,
+      message: result?.message || 'Status fetched',
+      data: result,
+    };
   } catch (error) {
-    res.status(201).json({ 
+    return {
       success: false,
-      error: 'Failed to start bot service',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    });
+      message: error instanceof Error ? error.message : 'Failed to get bot status',
+      data: null,
+    };
   }
 };
