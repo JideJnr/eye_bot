@@ -1,44 +1,33 @@
 import { Request, Response } from 'express';
-import { startEngine as startFootballEngine , stopEngine as stopFootballEngine, getEngineStatus as getFootballEngineStatus } from './bots/football';
-import { startEngine as startTestEngine, stopEngine as stopTestEngine, getEngineStatus as getTestEngineStatus } from './bots/test';
+import { startEngine as startTestEngine, stopEngine as stopTestEngine, getEagleEyes as getTestEagleEyes } from './bots/test';
 import { Bot, BotController, BotResponse } from './type/types';
 
 const botControllerMap: Record<string, BotController> = {
-  football_bot: {
-    start: startFootballEngine,
-    stop: stopFootballEngine,
-    status: getFootballEngineStatus,
-  },
   test_bot: {
     start: startTestEngine,
     stop: stopTestEngine,
-    status: getTestEngineStatus,
+    status: getTestEagleEyes,
   },
 };
 
 const bots: Bot[] = [
-  { id: 'test_bot', name: 'test_bot', status: false },
-  { id: 'football_bot', name: 'football_bot', status: false },
-  { id: 'basketball_bot', name: 'bot_test', status: false },
-  { id: 'tennis_bot', name: 'football_bot', status: false },
-  { id: 'news_bot', name: 'bot_test', status: false },
-  { id: 'crypto_bot', name: 'bot_test', status: false },
+  { id: 'test_bot', name: 'test_bot', status: false }
 ];
 
-let engineStatus = false;
+let eagleEyes = false;
 const results = [] as BotResponse[];
 
 const findBotById = (id: string) => bots.find(bot => bot.id === id);
 
 export const startEaglesEye = async (res: Response) => {
-  if (engineStatus) {
+ 
+ {/*  if (eagleEyes) {
     return res.status(200).json({
       success: false,
       status: 'ENGINE_ALREADY_RUNNING',
       message: 'Hmmm... I hope you know what you doing',
     });
   }
-  engineStatus = true;
   for (const bot of bots) {
     const controller = botControllerMap[bot.name];
     if (controller?.start) {
@@ -78,7 +67,9 @@ export const startEaglesEye = async (res: Response) => {
       bot.status = result.success;
     }
   }
-  results.length = 0; // Clear results after processing
+  results.length = 0; 
+  eagleEyes = true; */}
+  
   return res.status(200).json({
     success: true,
     status: 'ENGINE_STARTED',
@@ -88,14 +79,13 @@ export const startEaglesEye = async (res: Response) => {
 
 
 export const stopEaglesEye = async (res: Response) => {
-  if (!engineStatus) {
+  if (!eagleEyes) {
     return res.status(200).json({
       success: false,
       error: 'ENGINE_NOT_RUNNING',
       message: 'Hmmm... I hope you know what you doing',
     });
   }
-  engineStatus = false;
   for (const bot of bots) {
     const controller = botControllerMap[bot.name];
     if (controller?.stop) {
@@ -134,6 +124,7 @@ export const stopEaglesEye = async (res: Response) => {
       bot.status = result.success;
     }
   }
+  eagleEyes = false;
   return res.status(200).json({
     success: true,
     status: 'ENGINE_STOPPED',
@@ -144,7 +135,7 @@ export const stopEaglesEye = async (res: Response) => {
 
 export const startEngineById = async (req: Request, res: Response) => {
   const { id } = req.body;
-  if (!engineStatus) {
+  if (!eagleEyes) {
     return res.status(400).json({
       success: false,
       status: 'ENGINE_NOT_RUNNING',
@@ -172,7 +163,7 @@ export const startEngineById = async (req: Request, res: Response) => {
 
 export const stopEngineById = async (req: Request, res: Response) => {
   const { id } = req.body;
-  if (!engineStatus) {
+  if (!eagleEyes) {
     return res.status(400).json({
       success: false,
       error: 'ENGINE_NOT_RUNNING',
@@ -200,7 +191,7 @@ export const stopEngineById = async (req: Request, res: Response) => {
 
 export const getAllEngine = async ( res: Response) => {
   
-  if (!engineStatus) {
+  if (!eagleEyes) {
     return res.status(400).json({
       success: false,
       status: 'ENGINE_NOT_RUNNING',
@@ -217,11 +208,11 @@ export const getAllEngine = async ( res: Response) => {
   });
 };
 
-export const getEngineStatus = (req: Request, res: Response) => {
+export const getEagleEyes = (req: Request, res: Response) => {
   const { id } = req.body;
   const bot = findBotById(id);
 
-  if (!engineStatus) {
+  if (!eagleEyes) {
     return res.status(400).json({
       success: false,
       status: 'ENGINE_NOT_RUNNING',

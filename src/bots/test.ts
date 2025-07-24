@@ -2,7 +2,7 @@ import { Response } from "express";
 import { sendCommand } from "../botClient";
 
 
-const bot_url = process.env.BOT_SERVICE_URL || 'https://bot-football.onrender.com';
+const bot_url = process.env.BOT_SERVICE_URL || 'https://godscpr.onrender.com';
 
 export const startEngine = async ( res: Response ) => {
   try {

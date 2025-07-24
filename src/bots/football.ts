@@ -4,7 +4,7 @@ import { sendCommand } from "../botClient";
 
 const bot_url = process.env.BOT_SERVICE_URL || 'https://bot-football.onrender.com';
 
-export const startEngine = async ( res: Response ) => {
+export const startEngine = async ( ) => {
   try {
     const result = await sendCommand(bot_url,'start');
     res.json(result);
