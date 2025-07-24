@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getEngineStatus = exports.stopEngine = exports.startEngine = void 0;
 const botClient_1 = require("../botClient");
-const bot_url = process.env.BOT_SERVICE_URL || 'https://bot-football.onrender.com';
+const bot_url = process.env.BOT_SERVICE_URL || 'https://godscpr.onrender.com';
 const startEngine = (res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const result = yield (0, botClient_1.sendCommand)(bot_url, 'start');

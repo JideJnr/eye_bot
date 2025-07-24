@@ -1,7 +1,7 @@
 import express from 'express';
 import http from 'http';
 import WebSocket from 'ws';
-import {   getAllEngine, getEngineStatus,   startEaglesEye,  startEngineById,  stopEaglesEye,  stopEngineById } from './controller';
+import {   getAllEngine,    startEaglesEye,  startEngineById,  stopEaglesEye,  stopEngineById } from './controller';
 import setupWebSocket from './wsServer';
 
 const app = express();
