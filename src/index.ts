@@ -17,7 +17,6 @@ app.post('/stop', stopEaglesEye);
 app.get('/all', getAllEngine);
 app.get('/start/id', startEngineById)
 app.get('/stop/id', stopEngineById)
-app.post('/getStatus/id', getEngineStatus);
 
 
 // Start server
