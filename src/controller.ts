@@ -19,7 +19,7 @@ const results = [] as BotResponse[];
 
 const findBotById = (id: string) => bots.find(bot => bot.id === id);
 
-export const startEaglesEye = async (res: Response) => {
+export const startEaglesEye = async (req: Request, res: Response) => {
  
  {/*  if (eagleEyes) {
     return res.status(200).json({
@@ -78,7 +78,7 @@ export const startEaglesEye = async (res: Response) => {
 };
 
 
-export const stopEaglesEye = async (res: Response) => {
+export const stopEaglesEye = async (req: Request, res: Response) => {
   if (!eagleEyes) {
     return res.status(200).json({
       success: false,
@@ -189,7 +189,7 @@ export const stopEngineById = async (req: Request, res: Response) => {
   });
 };
 
-export const getAllEngine = async ( res: Response) => {
+export const getAllEngine = async (req: Request, res: Response) => {
   
   if (!eagleEyes) {
     return res.status(400).json({
