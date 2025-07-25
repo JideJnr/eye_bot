@@ -1,7 +1,7 @@
 import express from 'express';
 import http from 'http';
 import WebSocket from 'ws';
-import { checkEyeStatus, getAllEngine, startEaglesEye, startEngineById, stopEaglesEye, stopEngineById, getBotStatusById } from './controller';
+import { checkEyeStatus, getAllEngine, startEaglesEye, startEngineById, stopEaglesEye, stopEngineById, getEngineStatus } from './controller';
 import setupWebSocket from './wsServer';
 
 const app = express();
@@ -17,10 +17,10 @@ setupWebSocket(wss);
 app.post('/start', startEaglesEye);
 app.post('/stop', stopEaglesEye);
 app.get('/status', checkEyeStatus);
-app.get('/all', getAllEngine);
+app.get('/get/all', getAllEngine);
 app.post('/start/id', startEngineById); // expects { id } in body
 app.post('/stop/id', stopEngineById);   // expects { id } in body
-app.get('/status/id', getBotStatusById); // expects ?id= in query
+app.get('/status/id', getEngineStatus); // expects ?id= in query
 
 // Start server
 const PORT = process.env.PORT || 3001;

@@ -12,45 +12,60 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getEngineStatus = exports.stopEngine = exports.startEngine = void 0;
 const botClient_1 = require("../botClient");
 const bot_url = process.env.BOT_SERVICE_URL || 'https://godscpr.onrender.com';
-const startEngine = (res) => __awaiter(void 0, void 0, void 0, function* () {
+const startEngine = () => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     try {
-        const result = yield (0, botClient_1.sendCommand)(bot_url, 'start');
-        res.json(result);
+        const result = yield (0, botClient_1.sendPostCommand)(bot_url, 'start');
+        return {
+            success: (_a = result === null || result === void 0 ? void 0 : result.success) !== null && _a !== void 0 ? _a : true,
+            message: (result === null || result === void 0 ? void 0 : result.message) || 'Started successfully',
+            data: result,
+        };
     }
     catch (error) {
-        res.status(201).json({
+        return {
             success: false,
-            error: 'Failed to start bot service',
-            details: error instanceof Error ? error.message : 'Unknown error'
-        });
+            message: error instanceof Error ? error.message : 'Failed to start bot service',
+            data: null,
+        };
     }
 });
 exports.startEngine = startEngine;
-const stopEngine = (res) => __awaiter(void 0, void 0, void 0, function* () {
+const stopEngine = () => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     try {
-        const result = yield (0, botClient_1.sendCommand)(bot_url, 'stop');
-        res.json(result);
+        const result = yield (0, botClient_1.sendPostCommand)(bot_url, 'stop');
+        return {
+            success: (_a = result === null || result === void 0 ? void 0 : result.success) !== null && _a !== void 0 ? _a : true,
+            message: (result === null || result === void 0 ? void 0 : result.message) || 'Stopped successfully',
+            data: result,
+        };
     }
     catch (error) {
-        res.status(201).json({
+        return {
             success: false,
-            error: 'Failed to start bot service',
-            details: error instanceof Error ? error.message : 'Unknown error'
-        });
+            message: error instanceof Error ? error.message : 'Failed to stop bot service',
+            data: null,
+        };
     }
 });
 exports.stopEngine = stopEngine;
-const getEngineStatus = (res) => __awaiter(void 0, void 0, void 0, function* () {
+const getEngineStatus = () => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     try {
-        const result = yield (0, botClient_1.sendCommand)(bot_url, 'health');
-        res.json(result);
+        const result = yield (0, botClient_1.sendPostCommand)(bot_url, 'health');
+        return {
+            success: (_a = result === null || result === void 0 ? void 0 : result.success) !== null && _a !== void 0 ? _a : true,
+            message: (result === null || result === void 0 ? void 0 : result.message) || 'Status fetched',
+            data: result,
+        };
     }
     catch (error) {
-        res.status(201).json({
+        return {
             success: false,
-            error: 'Failed to start bot service',
-            details: error instanceof Error ? error.message : 'Unknown error'
-        });
+            message: error instanceof Error ? error.message : 'Failed to get bot status',
+            data: null,
+        };
     }
 });
 exports.getEngineStatus = getEngineStatus;

@@ -12,10 +12,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sendCommand = void 0;
+exports.sendGetCommand = exports.sendPostCommand = void 0;
 const axios_1 = __importDefault(require("axios"));
-const sendCommand = (command, bot) => __awaiter(void 0, void 0, void 0, function* () {
+const sendPostCommand = (bot, command) => __awaiter(void 0, void 0, void 0, function* () {
     const { data } = yield axios_1.default.post(`${bot}/${command}`);
     return data;
 });
-exports.sendCommand = sendCommand;
+exports.sendPostCommand = sendPostCommand;
+const sendGetCommand = (bot, command) => __awaiter(void 0, void 0, void 0, function* () {
+    const { data } = yield axios_1.default.get(`${bot}/${command}`);
+    return data;
+});
+exports.sendGetCommand = sendGetCommand;

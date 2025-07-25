@@ -1,11 +1,11 @@
-import { sendCommand } from "../botClient";
+import { sendPostCommand } from "../botClient";
 
 
 const bot_url = process.env.BOT_SERVICE_URL || 'https://godscpr.onrender.com';
 
 export const startEngine = async () => {
   try {
-    const result = await sendCommand(bot_url, 'start');
+    const result = await sendPostCommand(bot_url, 'start');
     return {
       success: result?.success ?? true,
       message: result?.message || 'Started successfully',
@@ -22,7 +22,7 @@ export const startEngine = async () => {
 
 export const stopEngine = async () => {
   try {
-    const result = await sendCommand(bot_url, 'stop');
+    const result = await sendPostCommand(bot_url, 'stop');
     return {
       success: result?.success ?? true,
       message: result?.message || 'Stopped successfully',
@@ -39,7 +39,7 @@ export const stopEngine = async () => {
 
 export const getEngineStatus = async () => {
   try {
-    const result = await sendCommand(bot_url, 'health');
+    const result = await sendPostCommand(bot_url, 'health');
     return {
       success: result?.success ?? true,
       message: result?.message || 'Status fetched',

@@ -53,7 +53,6 @@ const findBotById = (id: string) => bots.find(bot => bot.id === id);
   };
   
   export const stopEaglesEye = async (req: Request, res: Response) => {
-
     if (!eagleEyes) {
       return res.status(200).json({
         success: false,
@@ -87,7 +86,7 @@ const findBotById = (id: string) => bots.find(bot => bot.id === id);
 
   export const checkEyeStatus = async (req: Request, res: Response) => {
       if (!eagleEyes) {
-        return res.status(400).json({
+        return res.status(200).json({
           success: false,
           status: 'ENGINE_NOT_RUNNING',
           message: 'Hmmm... wonder why',
@@ -107,7 +106,7 @@ const findBotById = (id: string) => bots.find(bot => bot.id === id);
 
   export const getAllEngine = async (req: Request, res: Response) => {
     if (!eagleEyes) {
-      return res.status(400).json({
+      return res.status(200).json({
         success: false,
         status: 'ENGINE_NOT_RUNNING',
         message: 'Hmmm... i hope you know what you doing',
@@ -123,7 +122,7 @@ const findBotById = (id: string) => bots.find(bot => bot.id === id);
   export const startEngineById = async (req: Request, res: Response) => {
     const { id } = req.body;
     if (!eagleEyes) {
-      return res.status(400).json({
+      return res.status(200).json({
         success: false,
         status: 'ENGINE_NOT_RUNNING',
         message: 'Engine must be running to start a bot.',
@@ -131,7 +130,7 @@ const findBotById = (id: string) => bots.find(bot => bot.id === id);
     }
     const bot = findBotById(id);
     if (!bot) {
-      return res.status(404).json({ success: false, message: 'Bot not found.' });
+      return res.status(200).json({ success: false, message: 'Bot not found.' });
     }
     if (bot.status) {
       return res.status(200).json({ success: false, message: 'Bot is already running.' });
@@ -141,7 +140,7 @@ const findBotById = (id: string) => bots.find(bot => bot.id === id);
       const result = await controller.start();
       bot.status = result.success;
       if (!result.success) {
-        return res.status(500).json({ success: false, message: result.message || 'Failed to start bot.' });
+        return res.status(200).json({ success: false, message: result.message || 'Failed to start bot.' });
       }
     }
     return res.status(200).json({
@@ -154,7 +153,7 @@ const findBotById = (id: string) => bots.find(bot => bot.id === id);
   export const stopEngineById = async (req: Request, res: Response) => {
     const { id } = req.body;
     if (!eagleEyes) {
-      return res.status(400).json({
+      return res.status(200).json({
         success: false,
         error: 'ENGINE_NOT_RUNNING',
         message: 'Engine must be running to stop a bot.',
@@ -162,7 +161,7 @@ const findBotById = (id: string) => bots.find(bot => bot.id === id);
     }
     const bot = findBotById(id);
     if (!bot) {
-      return res.status(404).json({ success: false, message: 'Bot not found.' });
+      return res.status(200).json({ success: false, message: 'Bot not found.' });
     }
     if (!bot.status) {
       return res.status(200).json({ success: false, message: 'Bot is already stopped.' });
@@ -172,7 +171,7 @@ const findBotById = (id: string) => bots.find(bot => bot.id === id);
       const result = await controller.stop();
       bot.status = !result.success ? false : bot.status;
       if (!result.success) {
-        return res.status(500).json({ success: false, message: result.message || 'Failed to stop bot.' });
+        return res.status(200).json({ success: false, message: result.message || 'Failed to stop bot.' });
       }
     }
     return res.status(200).json({
@@ -182,10 +181,10 @@ const findBotById = (id: string) => bots.find(bot => bot.id === id);
     });
   };
 
-  export const getBotStatusById = async (req: Request, res: Response) => {
+  export const getEngineStatus = async (req: Request, res: Response) => {
     const id = req.query.id as string;
     if (!eagleEyes) {
-      return res.status(400).json({
+      return res.status(200).json({
         success: false,
         status: 'ENGINE_NOT_RUNNING',
         message: 'Engine must be running to check bot status.',
@@ -193,7 +192,7 @@ const findBotById = (id: string) => bots.find(bot => bot.id === id);
     }
     const bot = findBotById(id);
     if (!bot) {
-      return res.status(404).json({ success: false, message: 'Bot not found.' });
+      return res.status(200).json({ success: false, message: 'Bot not found.' });
     }
     return res.status(200).json({
       success: true,

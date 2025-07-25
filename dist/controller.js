@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getEagleEyes = exports.getAllEngine = exports.stopEngineById = exports.startEngineById = exports.stopEaglesEye = exports.startEaglesEye = void 0;
+exports.getEngineStatus = exports.stopEngineById = exports.startEngineById = exports.getAllEngine = exports.checkEyeStatus = exports.stopEaglesEye = exports.startEaglesEye = void 0;
 const test_1 = require("./bots/test");
 const botControllerMap = {
     test_bot: {
@@ -31,41 +31,32 @@ const startEaglesEye = (req, res) => __awaiter(void 0, void 0, void 0, function*
             message: 'Hmmm... I hope you know what you doing',
         });
     }
-    let allStarted = true;
+    const botResults = [];
     for (const bot of bots) {
         const controller = botControllerMap[bot.name];
         if (controller === null || controller === void 0 ? void 0 : controller.start) {
             try {
                 const result = yield controller.start();
                 bot.status = result.success;
-                if (!result.success)
-                    allStarted = false;
+                botResults.push(Object.assign({ id: bot.id, name: bot.name }, result));
             }
             catch (error) {
                 bot.status = false;
-                allStarted = false;
+                botResults.push({ id: bot.id, name: bot.name, success: false, message: error instanceof Error ? error.message : 'Unknown error', data: null });
             }
         }
         else {
             bot.status = false;
-            allStarted = false;
+            botResults.push({ id: bot.id, name: bot.name, success: false, message: 'No start handler found', data: null });
         }
     }
-    eagleEyes = allStarted;
-    if (allStarted) {
-        return res.status(200).json({
-            success: true,
-            status: 'ENGINE_STARTED',
-            message: 'Eagles Eye Functional... Engines online',
-        });
-    }
-    else {
-        return res.status(500).json({
-            success: false,
-            status: 'ENGINE_START_FAILED',
-            message: 'One or more bots failed to start.',
-        });
-    }
+    eagleEyes = true;
+    return res.status(200).json({
+        success: true,
+        status: 'ENGINE_STARTED',
+        message: 'Eagles Eye Functional... Engines online',
+        bots: botResults,
+    });
 });
 exports.startEaglesEye = startEaglesEye;
 const stopEaglesEye = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -76,108 +67,55 @@ const stopEaglesEye = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             message: 'Hmmm... I hope you know what you doing',
         });
     }
-    let allStopped = true;
+    const botResults = [];
     for (const bot of bots) {
         const controller = botControllerMap[bot.name];
         if (controller === null || controller === void 0 ? void 0 : controller.stop) {
             try {
                 const result = yield controller.stop();
                 bot.status = !result.success ? false : bot.status;
-                if (!result.success)
-                    allStopped = false;
+                botResults.push(Object.assign({ id: bot.id, name: bot.name }, result));
             }
             catch (error) {
-                allStopped = false;
+                botResults.push({ id: bot.id, name: bot.name, success: false, message: error instanceof Error ? error.message : 'Unknown error', data: null });
             }
         }
         else {
-            allStopped = false;
+            botResults.push({ id: bot.id, name: bot.name, success: false, message: 'No stop handler found', data: null });
         }
     }
-    eagleEyes = !allStopped;
-    if (allStopped) {
-        eagleEyes = false;
-        return res.status(200).json({
-            success: true,
-            status: 'ENGINE_STOPPED',
-            message: 'Lights Out.',
-            bots,
-        });
-    }
-    else {
-        return res.status(500).json({
-            success: false,
-            status: 'ENGINE_STOP_FAILED',
-            message: 'One or more bots failed to stop.',
-        });
-    }
+    eagleEyes = false;
+    return res.status(200).json({
+        success: true,
+        status: 'ENGINE_STOPPED',
+        message: 'Lights Out.',
+        bots: botResults,
+    });
 });
 exports.stopEaglesEye = stopEaglesEye;
-const startEngineById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.body;
+const checkEyeStatus = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (!eagleEyes) {
-        return res.status(400).json({
+        return res.status(200).json({
             success: false,
             status: 'ENGINE_NOT_RUNNING',
-            message: 'Engine must be running to start a bot.',
+            message: 'Hmmm... wonder why',
         });
     }
-    const bot = findBotById(id);
-    if (!bot) {
-        return res.status(404).json({ success: false, message: 'Bot not found.' });
-    }
-    if (bot.status) {
-        return res.status(200).json({ success: false, message: 'Bot is already running.' });
-    }
-    const controller = botControllerMap[bot.name];
-    if (controller === null || controller === void 0 ? void 0 : controller.start) {
-        const result = yield controller.start();
-        bot.status = result.success;
-        if (!result.success) {
-            return res.status(500).json({ success: false, message: result.message || 'Failed to start bot.' });
-        }
-    }
+    const botResults = bots.map(bot => ({
+        id: bot.id,
+        name: bot.name,
+        status: bot.status,
+    }));
     return res.status(200).json({
         success: true,
-        message: `Bot ${bot.name} has been started.`,
-        data: bot,
+        message: 'Eagles Eye is running',
+        data: botResults,
     });
 });
-exports.startEngineById = startEngineById;
-const stopEngineById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.body;
-    if (!eagleEyes) {
-        return res.status(400).json({
-            success: false,
-            error: 'ENGINE_NOT_RUNNING',
-            message: 'Engine must be running to stop a bot.',
-        });
-    }
-    const bot = findBotById(id);
-    if (!bot) {
-        return res.status(404).json({ success: false, message: 'Bot not found.' });
-    }
-    if (!bot.status) {
-        return res.status(200).json({ success: false, message: 'Bot is already stopped.' });
-    }
-    const controller = botControllerMap[bot.name];
-    if (controller === null || controller === void 0 ? void 0 : controller.stop) {
-        const result = yield controller.stop();
-        bot.status = !result.success ? false : bot.status;
-        if (!result.success) {
-            return res.status(500).json({ success: false, message: result.message || 'Failed to stop bot.' });
-        }
-    }
-    return res.status(200).json({
-        success: true,
-        message: `Bot ${bot.name} has been stopped.`,
-        data: bot,
-    });
-});
-exports.stopEngineById = stopEngineById;
+exports.checkEyeStatus = checkEyeStatus;
 const getAllEngine = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (!eagleEyes) {
-        return res.status(400).json({
+        return res.status(200).json({
             success: false,
             status: 'ENGINE_NOT_RUNNING',
             message: 'Hmmm... i hope you know what you doing',
@@ -190,23 +128,85 @@ const getAllEngine = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     });
 });
 exports.getAllEngine = getAllEngine;
-const getEagleEyes = (req, res) => {
+const startEngineById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.body;
-    const bot = findBotById(id);
     if (!eagleEyes) {
-        return res.status(400).json({
+        return res.status(200).json({
+            success: false,
+            status: 'ENGINE_NOT_RUNNING',
+            message: 'Engine must be running to start a bot.',
+        });
+    }
+    const bot = findBotById(id);
+    if (!bot) {
+        return res.status(200).json({ success: false, message: 'Bot not found.' });
+    }
+    if (bot.status) {
+        return res.status(200).json({ success: false, message: 'Bot is already running.' });
+    }
+    const controller = botControllerMap[bot.name];
+    if (controller === null || controller === void 0 ? void 0 : controller.start) {
+        const result = yield controller.start();
+        bot.status = result.success;
+        if (!result.success) {
+            return res.status(200).json({ success: false, message: result.message || 'Failed to start bot.' });
+        }
+    }
+    return res.status(200).json({
+        success: true,
+        message: `Bot ${bot.name} has been started.`,
+        data: bot,
+    });
+});
+exports.startEngineById = startEngineById;
+const stopEngineById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.body;
+    if (!eagleEyes) {
+        return res.status(200).json({
+            success: false,
+            error: 'ENGINE_NOT_RUNNING',
+            message: 'Engine must be running to stop a bot.',
+        });
+    }
+    const bot = findBotById(id);
+    if (!bot) {
+        return res.status(200).json({ success: false, message: 'Bot not found.' });
+    }
+    if (!bot.status) {
+        return res.status(200).json({ success: false, message: 'Bot is already stopped.' });
+    }
+    const controller = botControllerMap[bot.name];
+    if (controller === null || controller === void 0 ? void 0 : controller.stop) {
+        const result = yield controller.stop();
+        bot.status = !result.success ? false : bot.status;
+        if (!result.success) {
+            return res.status(200).json({ success: false, message: result.message || 'Failed to stop bot.' });
+        }
+    }
+    return res.status(200).json({
+        success: true,
+        message: `Bot ${bot.name} has been stopped.`,
+        data: bot,
+    });
+});
+exports.stopEngineById = stopEngineById;
+const getEngineStatus = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const id = req.query.id;
+    if (!eagleEyes) {
+        return res.status(200).json({
             success: false,
             status: 'ENGINE_NOT_RUNNING',
             message: 'Engine must be running to check bot status.',
         });
     }
+    const bot = findBotById(id);
     if (!bot) {
-        return res.status(404).json({ success: false, message: 'Bot not found.' });
+        return res.status(200).json({ success: false, message: 'Bot not found.' });
     }
     return res.status(200).json({
         success: true,
         message: `Bot ${bot.name} is ${bot.status ? 'running' : 'not running'}.`,
         data: bot,
     });
-};
-exports.getEagleEyes = getEagleEyes;
+});
+exports.getEngineStatus = getEngineStatus;
