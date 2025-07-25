@@ -182,7 +182,7 @@ const findBotById = (id: string) => bots.find(bot => bot.id === id);
   };
 
   export const getEngineStatus = async (req: Request, res: Response) => {
-    const id = req.query.id as string;
+    const { id } = req.params;
     if (!eagleEyes) {
       return res.status(200).json({
         success: false,
