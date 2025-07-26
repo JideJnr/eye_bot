@@ -120,7 +120,7 @@ const findBotById = (id: string) => bots.find(bot => bot.id === id);
   };
 
   export const startEngineById = async (req: Request, res: Response) => {
-    const { id } = req.body;
+    const { id } = req.params;
     if (!eagleEyes) {
       return res.status(200).json({
         success: false,
@@ -151,7 +151,7 @@ const findBotById = (id: string) => bots.find(bot => bot.id === id);
   };
 
   export const stopEngineById = async (req: Request, res: Response) => {
-    const { id } = req.body;
+    const { id } = req.params;
     if (!eagleEyes) {
       return res.status(200).json({
         success: false,

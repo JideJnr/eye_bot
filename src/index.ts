@@ -18,9 +18,9 @@ app.post('/start', startEaglesEye);
 app.post('/stop', stopEaglesEye);
 app.get('/status', checkEyeStatus);
 app.get('/get/all', getAllEngine);
-app.post('/start/:id', startEngineById); // expects { id } in body
-app.post('/stop/:id', stopEngineById);   // expects { id } in body
-app.get('/status/:id', getEngineStatus); // expects ?id= in query
+app.post('/start/:id', startEngineById); 
+app.post('/stop/:id', stopEngineById);   
+app.get('/status/:id', getEngineStatus); 
 
 // Start server
 const PORT = process.env.PORT || 3001;
