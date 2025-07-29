@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { startEngine as startTestEngine, stopEngine as stopTestEngine, getEngineStatus as getTestStatus } from './bots/test';
+import { startEngine as startSportyEngine, stopEngine as stopSportyEngine, getEngineStatus as getSportyStatus } from './bots/football';
 import { Bot, BotController} from './type/types';
 
 const botControllerMap: Record<string, BotController> = {
@@ -8,10 +9,17 @@ const botControllerMap: Record<string, BotController> = {
     stop: stopTestEngine,
     status: getTestStatus,
   },
+  sporty_bot: {
+    start: startSportyEngine,
+    stop: stopSportyEngine,
+    status: getSportyStatus,
+  }
 };
 
 const bots: Bot[] = [
-  { id: 'test_bot', name: 'test_bot', status: false }
+  { id: 'test_bot', name: 'test_bot', status: false },
+  { id: 'sporty_bot', name: 'sporty_bot', status: false }
+
 ];
 
 let eagleEyes = false;
