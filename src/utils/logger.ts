@@ -2,13 +2,19 @@
 const logs: string[] = [];
 
 /**
- * Add a log message (stored in memory and printed to console)
+ * Add a log message (stores only the last 20 messages)
  */
 export const addLog = (message: string) => {
   const timestamp = new Date().toISOString();
   const formatted = `[${timestamp}] ${message}`;
   logs.push(formatted);
-  console.log(formatted); // Print to console
+
+  // Keep only last 20 logs
+  if (logs.length > 20) {
+    logs.shift(); // remove the oldest entry
+  }
+
+  console.log(formatted);
 };
 
 /**
