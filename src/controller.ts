@@ -8,6 +8,7 @@ const botControllerMap: Record<string, BotController> = {
     start: startTestEngine,
     stop: stopTestEngine,
     status: getTestStatus,
+
   },
   sporty_bot: {
     start: startSportyEngine,
@@ -17,9 +18,8 @@ const botControllerMap: Record<string, BotController> = {
 };
 
 const bots: Bot[] = [
-  { id: 'test_bot', name: 'test_bot', status: false },
+  { id: 'test_bot', name: 'test_bot', status: false,   },
   { id: 'sporty_bot', name: 'sporty_bot', status: false }
-
 ];
 
 let eagleEyes = false;
@@ -138,10 +138,10 @@ const findBotById = (id: string) => bots.find(bot => bot.id === id);
     }
     const bot = findBotById(id);
     if (!bot) {
-      return res.status(200).json({ success: false, message: 'Bot not found.' });
+      return res.status(200).json({ success: false,status: 'ENGINE_NOT_FOUND', message: 'Bot not found.' });
     }
     if (bot.status) {
-      return res.status(200).json({ success: false, message: 'Bot is already running.' });
+      return res.status(200).json({ success: false,status: 'ENGINE_NOT_RUNNING', message: 'Bot is already running.' });
     }
     const controller = botControllerMap[bot.name];
     if (controller?.start) {
@@ -163,16 +163,16 @@ const findBotById = (id: string) => bots.find(bot => bot.id === id);
     if (!eagleEyes) {
       return res.status(200).json({
         success: false,
-        error: 'ENGINE_NOT_RUNNING',
+        status: 'ENGINE_NOT_RUNNING',
         message: 'Engine must be running to stop a bot.',
       });
     }
     const bot = findBotById(id);
     if (!bot) {
-      return res.status(200).json({ success: false, message: 'Bot not found.' });
+      return res.status(200).json({ success: false,status: 'ENGINE_NOT_FOUND', message: 'Bot not found.' });
     }
     if (!bot.status) {
-      return res.status(200).json({ success: false, message: 'Bot is already stopped.' });
+      return res.status(200).json({ success: false,status: 'ENGINE_NOT_RUNNING', message: 'Bot is already stopped.' });
     }
     const controller = botControllerMap[bot.name];
     if (controller?.stop) {
@@ -202,6 +202,15 @@ const findBotById = (id: string) => bots.find(bot => bot.id === id);
     if (!bot) {
       return res.status(200).json({ success: false, message: 'Bot not found.' });
     }
+    const controller = botControllerMap[bot.name];
+    if (controller?.status) {
+      const result = await controller.status();
+      bot.status = !result.success ? false : bot.status;
+      if (!result.success) {
+        return res.status(200).json({ success: false, message: result.message || 'Failed to get status.' });
+      }
+    }
+
     return res.status(200).json({
       success: true,
       message: `Bot ${bot.name} is ${bot.status ? 'running' : 'not running'}.`,
