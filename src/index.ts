@@ -1,8 +1,10 @@
 import express from 'express';
 import http from 'http';
 import WebSocket from 'ws';
-import { checkEyeStatus, getAllEngine, startEaglesEye, startEngineById, stopEaglesEye, stopEngineById, getEngineStatus } from './controller';
+import { checkEyeStatus, getAllEngine, startEaglesEye, startEngineById, stopEaglesEye, stopEngineById, getEngineStatus, getLogs } from './controller';
 import setupWebSocket from './wsServer';
+import { addLog } from './utils/logger';
+
 
 const app = express();
 const server = http.createServer(app);
@@ -21,9 +23,11 @@ app.get('/get/all', getAllEngine);
 app.post('/start/:id', startEngineById); 
 app.post('/stop/:id', stopEngineById);   
 app.get('/status/:id', getEngineStatus); 
+app.get('/logs', getLogs);
 
 // Start server
 const PORT = process.env.PORT || 3001;
 server.listen(PORT, () => {
-  console.log(`✅ Bot Service running on port ${PORT}`);
+  addLog(`✅ Bot Service running on port ${PORT}`);
 });
+

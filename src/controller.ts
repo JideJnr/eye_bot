@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { startEngine as startTestEngine, stopEngine as stopTestEngine, getEngineStatus as getTestStatus } from './bots/test';
 import { startEngine as startSportyEngine, stopEngine as stopSportyEngine, getEngineStatus as getSportyStatus } from './bots/football';
 import { Bot, BotController} from './type/types';
+import { addLog, clearLogs, getLogs as fetchLogs } from './utils/logger';
 
 const botControllerMap: Record<string, BotController> = {
   test_bot: {
@@ -84,6 +85,7 @@ const findBotById = (id: string) => bots.find(bot => bot.id === id);
       }
     }
     eagleEyes = false;
+    clearLogs();
     return res.status(200).json({
       success: true,
       status: 'ENGINE_STOPPED',
@@ -217,3 +219,7 @@ const findBotById = (id: string) => bots.find(bot => bot.id === id);
       data: bot,
     });
   };
+
+export const getLogs = (req: Request, res: Response) => {
+  res.json({ logs: fetchLogs() });
+};
