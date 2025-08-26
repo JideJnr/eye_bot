@@ -14,7 +14,7 @@ export const addLog = (message: string) => {
     logs.shift(); // remove the oldest entry
   }
 
-  console.log(formatted);
+  addLog(formatted);
 };
 
 /**
